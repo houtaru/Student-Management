@@ -1,0 +1,4 @@
+No,Course ID,Course Name,Class,LecturerAccount,Start Date,End Date,Day of Week,Start Hour,End Hour,Room
+1,ABC123,Alpha beta,18CLC1,aaa,01-01-2019,01-03-2019,Mon,8:00,10:00,I41
+2,CFS111,Code for Force,18CLC2,bbb,02-02-2019,01-03-2019,Tue,8:00,10:00,I42
+3,BCC222,Begin New Thing,18CLC3,ccc,03-03-2019,01-03-2019,Wed,8:00,10:00,I43
