@@ -10,7 +10,7 @@ This is our final project in CS162.
 ### Installation:
 - Clone project from github
 ```
-git clone https://github.com/khoa3101/Student-Management.git
+    git clone https://github.com/khoa3101/Student-Management.git
 ```
 - Build:
 ```
@@ -18,7 +18,7 @@ git clone https://github.com/khoa3101/Student-Management.git
 ```
 - Run:
 ```
-make run
+    make run    
 ```
 
 ### Note
@@ -35,4 +35,4 @@ make run
       - Password: 3333
     - Student:
       - Account: Student ID
-      - Password: Date of birth (ddmmyyyy) (eg: 2000-01-10 -> password: 10012000)
+      - Password: Date of birth (ddmmyyyy) (eg: DoB: 2000-01-10 -> password: 10012000)
