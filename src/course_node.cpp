@@ -1054,14 +1054,13 @@ void LectCourseNode::displayAttend() {
     rectangle(LINES / 3 + 1, 1, LINES - LINES / 3 - 3, COLS - 2).clear(1);
     
     rectangle cwin[3];
-    cwin[0] = rectangle(LINES / 3 + 6, COLS / 2 - 25, 20, 50);
+    cwin[0] = rectangle(LINES / 3 + 3, COLS / 2 - 25, 26, 50);
     cwin[1] = rectangle(cwin[0].bottom() - 1, cwin[0].left() + cwin[0].width() / 4 - 8, 3, 16);
     cwin[2] = rectangle(cwin[0].bottom() - 1, cwin[0].left() + cwin[0].width() * 3 / 4 - 8, 3, 16);
 
-    cwin[0].drawEdges();
-
-    mvaddstr(cwin[0].top() + 1, cwin[0].left() + cwin[0].width() / 4 - 5, "Student ID");
-    mvaddstr(cwin[0].top() + 1, cwin[0].left() + cwin[0].width() * 3 / 4 - 5, "Attendance");
+    // cwin[0].drawEdges();
+    // mvaddstr(cwin[0].top() + 1, cwin[0].left() + cwin[0].width() / 4 - 5, "Student ID");
+    // mvaddstr(cwin[0].top() + 1, cwin[0].left() + cwin[0].width() * 3 / 4 - 5, "Attendance");
 
     vector <string> studentList;
     vector < vector <int> > comps;
@@ -1093,13 +1092,18 @@ void LectCourseNode::displayAttend() {
     
     auto updateptr = [&](int ptr) {
         cwin[0].drawEdges();
+        
+        mvaddstr(cwin[0].top() + 1, cwin[0].left() + cwin[0].width() / 2 - 7, "Attendance List");
+        mvaddstr(cwin[0].top() + 3, cwin[0].left() + cwin[0].width() / 4 - 5, "Student ID");
+        mvaddstr(cwin[0].top() + 3, cwin[0].left() + cwin[0].width() * 3 / 4 - 5, "Attendance");
+        
         for (int i = 0; i < comps.size(); ++i) {
             if (i == ptr) attron(A_REVERSE);
-            for (int k = cwin[0].left() + 1; k < cwin[0].right(); ++k) {
-                mvaddch(cwin[0].top() + 3 + i, k, ' ');
+            for (int k = cwin[0].left() + 2; k < cwin[0].right() - 1; ++k) {
+                mvaddch(cwin[0].top() + 5 + 2 * i, k, ' ');
             }
-            mvprintw(cwin[0].top() + 3 + i, cwin[0].left() + cwin[0].width() / 4 - studentList[i].size() / 2, "%s", studentList[i].c_str());
-            mvprintw(cwin[0].top() + 3 + i, cwin[0].left() + cwin[0].width() / 4 * 3 - 2, "%d / %d", accumulate(comps[i].begin(), comps[i].end(), 0), 10);
+            mvprintw(cwin[0].top() + 5 + 2 * i, cwin[0].left() + cwin[0].width() / 4 - studentList[i].size() / 2, "%s", studentList[i].c_str());
+            mvprintw(cwin[0].top() + 5 + 2 * i, cwin[0].left() + cwin[0].width() / 4 * 3 - 2, "%d / %d", accumulate(comps[i].begin(), comps[i].end(), 0), 10);
 
             if (i == ptr) attroff(A_REVERSE);
         }
@@ -1140,30 +1144,58 @@ void LectCourseNode::displayAttend() {
 void LectCourseNode::editAttendance(int pos, vector <int> &att) {
     rectangle(LINES / 3 + 1, 1, LINES - LINES / 3 - 3, COLS - 2).clear(1);
 
-    rectangle frame(LINES / 3 + 1, COLS / 2 - 10, 3 * 10 + 2 + 2, 25);
-    frame.drawEdges();
-    vector <rectangle> cwin;
-    cwin.push_back(rectangle(frame.top() + 1, frame.left() + 8, 3, 10));
-    for (int i = 1; i < 10; ++i) {
-        rectangle cur(cwin.back().bottom() + 1, cwin.back().left(), cwin.back().height(), cwin.back().width());
-        cwin.push_back(cur);
-    }
-    
-    vector <rectangle> bwin(2);
-    bwin[0] = rectangle(frame.bottom() - 1, frame.left() + frame.width() / 3 - 2, 3, 6);
-    bwin[1] = rectangle(frame.bottom() - 1, frame.left() + frame.width() / 3 * 2 - 2, 3, 6);
-    vector <string> comps;
-    for (int i = 0; i < att.size(); ++i) comps.push_back(!att[i] ? " " : "x");
-    vector <string> buttons {
-        "SAVE",
-        "BACK"
+    vector <string> text {
+        "Edit Attendance",
+        "Week 1",
+        "Week 2",
+        "Week 3",
+        "Week 4",
+        "Week 5",
+        "Week 6",
+        "Week 7",
+        "Week 8",
+        "Week 9",
+        "Week 10"
     };
-    Windows *xwin = new Windows;
-    xwin->setComponents(comps);
-    xwin->setButtons(buttons);
-    xwin->setCFrame(cwin);
-    
-    int cur = 0, lim = comps.size() + buttons.size();
+    vector <int> comps(att);
+    rectangle frame(LINES / 3 + 4, COLS / 2 - 22, 2 * text.size() + 3, 44);
+    vector <rectangle> cwin;
+    vector <string> buttons {
+        "[  SAVE  ]",
+        "[  BACK  ]"
+    };
+
+    frame.drawEdges();
+    mvaddstr(frame.top() + 1, frame.left() + frame.width() / 2 - text[0].size() / 2, text[0].c_str());
+    for (int i = 1; i < text.size(); ++i) {
+        mvaddstr(frame.top() + 1 + 2 * i, frame.left() + frame.width() / 4 - text[i].size() / 2, text[i].c_str());
+        cwin.push_back(rectangle(frame.top() + 1 + 2 * i, frame.left() + frame.width() / 2 - 2, 1, frame.width() / 2 - 2));
+    }
+    for (int i = 0; i < 2; ++i) {
+        mvaddstr(frame.bottom(), frame.left() + (!i ? 1 : 3) * frame.width() / 4 - buttons[i].size() / 2, buttons[i].c_str());
+    }
+
+    auto updateptr = [&](int ptr) {
+        frame.drawEdges();
+        mvaddstr(frame.top() + 1, frame.left() + frame.width() / 2 - text[0].size() / 2, text[0].c_str());
+
+        for (int i = 1; i < text.size(); ++i) {
+            mvaddstr(frame.top() + 1 + 2 * i, frame.left() + frame.width() / 4 - text[i].size() / 2, text[i].c_str());
+            if (ptr == i - 1) attron(A_REVERSE);
+            mvaddstr(cwin[i - 1].top(), cwin[i - 1].left(), string(cwin[i - 1].width(), ' ').c_str());
+            if (comps[i - 1]) mvaddch(cwin[i - 1].top(), cwin[i - 1].left() + cwin[i - 1].width() / 2, 'x');
+            if (ptr == i - 1) attroff(A_REVERSE);
+        }
+
+        ptr -= text.size() - 1;
+        for (int i = 0; i < 2; ++i) {
+            if (ptr == i) attron(A_REVERSE);
+            mvaddstr(frame.bottom(), frame.left() + (!i ? 1 : 3) * frame.width() / 4 - buttons[i].size() / 2, buttons[i].c_str());
+            if (ptr == i) attroff(A_REVERSE);
+        }
+    };
+
+    int cur = 0, lim = cwin.size() + buttons.size();
     while (true) {
         int input = getch();
         if (input == KEY_UP || input == KEY_LEFT) {
@@ -1173,19 +1205,17 @@ void LectCourseNode::editAttendance(int pos, vector <int> &att) {
         } else if (input == ' ' || input == '\n') {
             if (cur == lim - 1 ) break;
             else if (cur == lim - 2) {
-                for (int i = 0; i < att.size(); ++i) att[i] = comps[i] == "x";
+                att = comps;
                 break;
             } else {
                 System *sys = new System;
-                comps[cur] = sys->getInput(cwin[cur].top() + 1, cwin[cur].left() + 1, 0);
-                xwin->setComponents(comps);
+                comps[cur] = sys->getInput(cwin[cur].top(), cwin[cur].left() + cwin[cur].width() / 2, 0) == "x";
                 delete sys;
             }
         }
-        xwin->updatePtr(cur);
+        updateptr(cur);
     }
-    for (int i = 0; i < att.size(); ++i) att[i] = comps[i] == "x";
-    delete xwin;
+    //for (int i = 0; i < att.size(); ++i) att[i] = comps[i] == "x";
     rectangle(LINES / 3 + 1, 1, LINES - LINES / 3 - 3, COLS - 2).clear(1);
 }
 
